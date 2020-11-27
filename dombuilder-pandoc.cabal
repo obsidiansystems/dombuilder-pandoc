@@ -1,0 +1,26 @@
+cabal-version:       >=1.10
+name:                dombuilder-pandoc
+version:             0.1.0.0
+synopsis:            Convert Pandoc to reflex-dom DomBuilder
+-- description:
+homepage:            https://github.com/obsididansystems/dombuilder-pandoc
+-- bug-reports:
+license:             BSD3
+license-file:        LICENSE
+author:              Obsidian Systems LLC
+maintainer:          maintainer@obsidian.systems
+copyright:           Obsidian Systems LLC
+category:            Web
+build-type:          Simple
+extra-source-files:  CHANGELOG.md
+
+library
+  exposed-modules:     Reflex.Dom.Builder.Pandoc
+  build-depends:       base >=4.12 && <4.14
+                     , containers
+                     , pandoc >= 2.11 && < 2.12
+                     , pandoc-types >= 1.2.2 && <1.3
+                     , reflex-dom-core >= 0.6.1 && < 0.7
+                     , text
+  hs-source-dirs:      src
+  default-language:    Haskell2010
