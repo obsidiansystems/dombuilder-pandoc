@@ -26,7 +26,7 @@ block = \case
   Plain xs -> mapM_ inline xs
   Para xs -> el "p" $ mapM_ inline xs
   LineBlock xss -> el "p" $ mapM_ inline $ intercalate [LineBreak] xss
-  CodeBlock a code -> elAttr "pre" (attr a) $ text code
+  CodeBlock a code -> el "pre" $ elAttr "code" (attr a) $ text code
   RawBlock (Format f) t -> -- TODO: decide how to handle raw blocks
     elAttr "pre" ("class" =: "raw" <> "format" =: f) $ text t
   BlockQuote xs -> el "blockquote" $ mapM_ block xs
