@@ -18,7 +18,6 @@ library
   exposed-modules:     Reflex.Dom.Builder.Pandoc
   build-depends:       base >=4.12 && <4.14
                      , containers
-                     , pandoc >= 2.11 && < 2.12
                      , pandoc-types >= 1.22 && <1.23
                      , reflex-dom-core >= 0.6.1 && < 0.7
                      , text
