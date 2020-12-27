@@ -16,6 +16,7 @@ extra-source-files:  CHANGELOG.md
 
 library
   exposed-modules:     Reflex.Dom.Builder.Pandoc
+                       Reflex.Dom.Builder.Pandoc.RawHtml
   build-depends:       base >=4.12 && <4.14
                      , containers >= 0.6 && <0.7
                      , html-parse >= 0.2 && <0.3

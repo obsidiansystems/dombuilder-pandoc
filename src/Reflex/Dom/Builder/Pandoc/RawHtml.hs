@@ -31,7 +31,7 @@ overloadedSpanId = "dombuilder-pandoc-overloaded-span"
 -- "strong", "sub", "sup", "time", "u", "var"
 -- @
 --
--- Note that this function (mis)usesthe 'Span' node type to store details
+-- Note that this function (mis)uses the 'Span' node type to store details
 -- of the inline html node that will eventually be produced.
 inlineHtmlSanitizer :: [Inline] -> [Inline]
 inlineHtmlSanitizer rs = case rs of
