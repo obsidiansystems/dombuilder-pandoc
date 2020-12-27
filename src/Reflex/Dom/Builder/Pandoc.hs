@@ -1,6 +1,6 @@
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# Language LambdaCase #-}
+{-# Language OverloadedStrings #-}
+{-# Language ScopedTypeVariables #-}
 {-|
 Description: Convert pandoc documents to reflex dom widgets
 |-}
@@ -14,6 +14,8 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Reflex.Dom.Core hiding (Space, Link)
 import Text.Pandoc.Definition
+
+import Reflex.Dom.Builder.Pandoc.RawHtml
 
 attr :: Attr -> Map Text Text
 attr (ident, classes, other) = Map.fromListWith (\a b -> a <> " " <> b) $
@@ -92,7 +94,7 @@ inline = \case
   Math _mathType t -> -- TODO: display tex math
     el "pre" $ text t
   RawInline (Format f) t -> -- TODO: decide how to handle raw inline
-    elAttr "code" ("class" =: "raw" <> "format" =: f) $ text t
+    renderRaw f t
   Link a xs target ->
     elAttr "a" (attr a <> "href" =: fst target <> "title" =: snd target) $
       mapM_ inline xs
@@ -100,8 +102,14 @@ inline = \case
     elAttr "img" (attr a <> "src" =: fst target <> "title" =: snd target) $
       mapM_ inline xs
   Note xs -> el "comment" $ mapM_ block xs
-  Span a xs -> elAttr "span" (attr a) $ mapM_ inline xs
+  Span a xs -> case a of
+    (aid, [tagName], attrs) | aid == overloadedSpanId ->
+      elAttr tagName (attr ("", [], attrs)) $ mapM_ inline xs
+    _ -> elAttr "span" (attr a) $ mapM_ inline xs
   Underline xs -> el "u" $ mapM_ inline xs
+  where
+    renderRaw f =
+      elAttr "code" ("class" =: "raw" <> "format" =: f) . text
 
 metaTable :: DomBuilder t m => Meta -> m ()
 metaTable (Meta mm) =
