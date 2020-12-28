@@ -91,8 +91,9 @@ inline = \case
   Space -> text " "
   SoftBreak -> text "\n"
   LineBreak -> el "br" blank
-  Math _mathType t -> -- TODO: display tex math
-    el "pre" $ text t
+  Math mathType t -> case mathType of
+    DisplayMath -> elClass "pre" "math" $ text t
+    InlineMath -> elClass "code" "math" $ text t
   RawInline (Format f) t -> -- TODO: decide how to handle raw inline
     renderRaw f t
   Link a xs target ->
