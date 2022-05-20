@@ -4,7 +4,11 @@
 {-|
 Description: Convert pandoc documents to reflex dom widgets
 |-}
-module Reflex.Dom.Builder.Pandoc where
+module Reflex.Dom.Builder.Pandoc
+  ( block
+  , inline
+  , metaTable
+  ) where
 
 import Control.Monad
 import Data.List
