@@ -35,16 +35,16 @@ overloadedSpanId = "dombuilder-pandoc-overloaded-span"
 -- of the inline html node that will eventually be produced.
 inlineHtmlSanitizer :: [Inline] -> [Inline]
 inlineHtmlSanitizer rs = case rs of
-  (r@(RawInline "html" tag):xs) -> case Html.parseTokens tag of
+  (r@(Inline (RawInline "html" tag)) : xs) -> case Html.parseTokens tag of
     [Html.TagSelfClose t atts] -> case Map.lookup t allowedInlineHtml of
       Nothing -> r : sanitizeInlineHtml xs
-      Just allowed -> Span (overloadedSpanId, [t], allowedAttrs atts allowed) [] :
+      Just allowed -> Inline (Span (overloadedSpanId, [t], allowedAttrs atts allowed) []) :
         sanitizeInlineHtml xs
     [Html.TagOpen t atts] -> case Map.lookup t allowedInlineHtml of
       Nothing -> r : sanitizeInlineHtml xs
       Just allowed -> case break (isClosingTagOf t) xs of
         (contents, _closing:rest) ->
-          Span (overloadedSpanId, [t], allowedAttrs atts allowed) contents :
+          Inline (Span (overloadedSpanId, [t], allowedAttrs atts allowed) contents) :
             sanitizeInlineHtml rest
         _ -> r : sanitizeInlineHtml xs
     _ -> r : sanitizeInlineHtml xs
@@ -53,7 +53,7 @@ inlineHtmlSanitizer rs = case rs of
   where
     isClosingTagOf :: Html.TagName -> Inline -> Bool
     isClosingTagOf t = \case
-      RawInline "html" raw -> case Html.parseTokens raw of
+      Inline (RawInline "html" raw) -> case Html.parseTokens raw of
         [Html.TagClose t'] -> t == t'
         _ -> False
       _ -> False
