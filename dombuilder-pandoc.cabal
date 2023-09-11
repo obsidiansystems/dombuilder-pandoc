@@ -21,10 +21,10 @@ library
                      , containers >= 0.6 && <0.7
                      , html-parse >= 0.2 && <0.3
                      , pandoc-types >= 1.22 && <1.23
-                     , reflex-dom-core >= 0.7 && < 0.8
+                     , reflex-dom-core >= 0.7 && < 0.9
                      , text >= 1.2 && <1.3
                      -- We don't actually need aeson, but pandoc-types has a too-lenient bound
-                     , aeson >= 1.4 && <1.6
+                     , aeson >= 1.4 && <2.2
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:       -Wall
