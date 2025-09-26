@@ -23,6 +23,13 @@ attr (ident, classes, other) = Map.fromListWith (\a b -> a <> " " <> b) $
   , ("class", T.intercalate " " classes)
   ] <> other
 
+caption :: DomBuilder t m => Caption -> m ()
+caption = \case
+  Caption (Just short) xs -> do
+    mapM_ inline short
+    mapM_ block xs
+  Caption Nothing xs -> mapM_ block xs
+
 block :: DomBuilder t m => Block -> m ()
 block = \case
   Plain xs -> mapM_ inline xs
@@ -42,16 +49,15 @@ block = \case
   Header lvl a xs -> elAttr ("h" <> T.pack (show lvl)) (attr a) $
     mapM_ inline xs
   HorizontalRule -> el "hr" $ pure ()
-  Table a caption _colSpecs (TableHead hattrs hrows) tbody (TableFoot fattrs frows) ->
+  Figure a cap xs -> elAttr "figure" (attr a) $ do
+    el "figcaption" $ caption cap
+    mapM_ block xs
+  Table a cap _colSpecs (TableHead hattrs hrows) tbody (TableFoot fattrs frows) ->
     -- TODO: format columns
     -- TODO: format cells
     -- TODO: handle intermediate table heads in body
     elAttr "table" (attr a) $ do
-      el "caption" $ case caption of
-        (Caption (Just short) xs) -> do
-          mapM_ inline short
-          mapM_ block xs
-        (Caption Nothing xs) -> mapM_ block xs
+      el "caption" $ caption cap
       let mkRow cell (Row ra cs) = elAttr "tr" (attr ra) $
             mapM_ (\(Cell ca _align _rowSpan _colSpan ys) ->
               elAttr cell (attr ca) $ mapM_ block ys) cs
@@ -60,7 +66,6 @@ block = \case
         elAttr "tbody" (attr ba) $ mapM_ (mkRow "td") cs
       elAttr "tfoot" (attr fattrs) $ mapM_ (mkRow "td") frows
   Div a xs -> elAttr "div" (attr a) $ mapM_ block xs
-  Null -> blank
   where
     listStyle = \case
       DefaultStyle -> mempty
